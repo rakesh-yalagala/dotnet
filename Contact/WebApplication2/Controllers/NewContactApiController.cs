@@ -37,6 +37,7 @@ namespace WebApplication2.Controllers
                 return BadRequest("The contact ID does not exist.");
             }
             // List<int> numberIds = Updatedcontact.NumberId;
+            
             // IActionResult res = Getcontactsnumber(Updatedcontact.ContactId);
             // var Gettingdetails = _context.Contact.Include(nc => nc.Alternewcontact)
             //                             .FirstOrDefault();  // Adjust this to filter if necessary
