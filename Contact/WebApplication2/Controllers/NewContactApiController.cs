@@ -80,6 +80,7 @@ namespace WebApplication2.Controllers
             if (ExistingUpdate == null)
             {
                 Console.WriteLine("uhytfgyh");
+                Console.WriteLine("yutfgh");
                 return BadRequest("The contact ID does not exist.");
             }
            
