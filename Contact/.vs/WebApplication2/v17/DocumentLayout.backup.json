@@ -1,0 +1,36 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Git_sourcecode\\git\\Contact\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{EF9EECB6-C5FD-4D99-A39A-5B4852D568FF}|WebApplication2\\WebApplication2.csproj|e:\\git_sourcecode\\git\\contact\\webapplication2\\controllers\\newcontactapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EF9EECB6-C5FD-4D99-A39A-5B4852D568FF}|WebApplication2\\WebApplication2.csproj|solutionrelative:webapplication2\\controllers\\newcontactapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "NewContactApiController.cs",
+              "DocumentMoniker": "E:\\Git_sourcecode\\git\\Contact\\WebApplication2\\Controllers\\NewContactApiController.cs",
+              "RelativeDocumentMoniker": "WebApplication2\\Controllers\\NewContactApiController.cs",
+              "ToolTip": "E:\\Git_sourcecode\\git\\Contact\\WebApplication2\\Controllers\\NewContactApiController.cs",
+              "RelativeToolTip": "WebApplication2\\Controllers\\NewContactApiController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-28T13:27:46.121Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
