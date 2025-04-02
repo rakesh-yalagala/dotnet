@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Npgsql;
 using NpgsqlTypes;
 using WebApplication2.Models;
+using WebApplication2.Models.Response;
 
 namespace WebApplication2.Controllers
 {
@@ -44,7 +45,8 @@ namespace WebApplication2.Controllers
 
                     var id =new NpgsqlParameter("@rv_ContactId",NpgsqlDbType.Integer)
                     {
-                        Direction=ParameterDirection.InputOutput,Value=DBNull.Value
+                        Direction=ParameterDirection.InputOutput
+                        ,Value=DBNull.Value
                         
                     };
                     cmd.Parameters.Add(id);
@@ -95,12 +97,38 @@ namespace WebApplication2.Controllers
                   };
                   cmd.Parameters.Add(Contactname);
                   cmd.ExecuteNonQuery();
-                  string contactName = Contactname.Value?.ToString() ?? "Unknown";/////////
+                  string contactName = Contactname.Value?.ToString() ?? "notdefined";/////////
                 }
                 using (NpgsqlTransaction transaction=npgsqlConnection.BeginTransaction())
                 {
                     using (NpgsqlCommand cmd =new NpgsqlCommand(@"call GetNumber(@p_ContactId,@ref_cursor)",npgsqlConnection,transaction))
                     {
+                        cmd.Parameters.Add("p_ContactId",NpgsqlDbType.Integer).Value=id;
+                        var Contact=new NpgsqlParameter("ref_cursor",NpgsqlDbType.Refcursor)
+                        {
+                            Direction=ParameterDirection.InputOutput,
+                            Value="getcontact"
+                        };
+                        cmd.Parameters.Add(Contact);
+                        cmd.ExecuteNonQuery();
+                        cmd.CommandText="Fetch all in getcontact";
+                        cmd.CommandType=CommandType.Text;
+                        NpgsqlDataReader Details=cmd.ExecuteReader();
+                        var resultcontact=new List<Alternewcontactresponse>();
+                        while (Details.Read())
+                        {
+                             resultcontact.Add(new Alternewcontactresponse
+                             {
+                                NumberId=Details.GetInt32(0),
+                                PhoneNumber=Details.GetString(1)
+
+                             });  
+
+                        }
+                        Details.Close();
+
+
+
                         
                     }
                 }

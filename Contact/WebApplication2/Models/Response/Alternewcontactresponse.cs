@@ -8,7 +8,8 @@ namespace WebApplication2.Models.Response
     public class Alternewcontactresponse
     {
 
-        public string? Numbers { get; set; } 
+        public  string? PhoneNumber{ get; set; } 
+         public int NumberId{get; set; } 
 
     }
 }
