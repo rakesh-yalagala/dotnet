@@ -96,7 +96,7 @@ namespace WebApplication2.Controllers
 
             return Ok("contact added successfully");
         }
-        
+
 
         [HttpGet("Get")]
         public IActionResult GetDetails(int id)
@@ -108,15 +108,16 @@ namespace WebApplication2.Controllers
                 npgsqlConnection.Open();
                 using (var transaction = npgsqlConnection.BeginTransaction())
                 {
-                    
+
                     using (var cmd = new NpgsqlCommand("CALL GetNumber(@p_ContactId, @p_PhoneNumber, @p_NumberId)", npgsqlConnection, transaction))
                     {
                         cmd.Parameters.AddWithValue("p_ContactId", id);
 
-                        
+
                         var phoneNumberParam = new NpgsqlParameter("p_PhoneNumber", NpgsqlDbType.Varchar)
                         {
-                            Direction = ParameterDirection.InputOutput,Value = DBNull.Value
+                            Direction = ParameterDirection.InputOutput,
+                            Value = DBNull.Value
                         };
                         cmd.Parameters.Add(phoneNumberParam);
 
@@ -127,7 +128,7 @@ namespace WebApplication2.Controllers
                         };
                         cmd.Parameters.Add(numberIdParam);
 
-                        
+
                         cmd.ExecuteNonQuery();
 
                         string phoneNumber = phoneNumberParam.Value?.ToString() ?? "Not Defined";
@@ -204,8 +205,67 @@ namespace WebApplication2.Controllers
             return Ok("contact deleted");
         }
 
+        [HttpPost("Update")]
+        public IActionResult UpdateContacts([FromBody] NewContacts Contacts)
+        {
+            int ContactId;
+            string? pgsqlConnection = _configuration.GetConnectionString("DefaultConnection");
+
+            using (NpgsqlConnection npgsqlConnection = new NpgsqlConnection(pgsqlConnection))
+            {
+                npgsqlConnection.Open();
+                DateTime createdOn = Contacts.CreatedOn == default ? DateTime.UtcNow : Contacts.CreatedOn;
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(@"call UpdateContact(@p_ContactId,@p_ContactName, @p_Relation, @p_Gender, @p_IsDeleted, @p_CreatedOn)", npgsqlConnection))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.Add("@p_ContactName", NpgsqlDbType.Varchar).Value = Contacts.ContactName;
+                    cmd.Parameters.Add("@p_Gender", NpgsqlDbType.Varchar).Value = Contacts.Gender;
+                    cmd.Parameters.Add("@p_Relation", NpgsqlDbType.Varchar).Value = Contacts.Relation;
+                    cmd.Parameters.Add("@p_IsDeleted", NpgsqlDbType.Boolean).Value = Contacts.IsDeleted;
+                    cmd.Parameters.Add("@p_CreatedOn", NpgsqlDbType.TimestampTz).Value = createdOn;
 
 
+                    var id = new NpgsqlParameter("@p_ContactId", NpgsqlDbType.Integer)
+                    {
+                        Direction = ParameterDirection.InputOutput,
+                        Value = Contacts.ContactId
 
+                    };
+                    cmd.Parameters.Add(id);
+                    cmd.ExecuteNonQuery();
+                    ContactId = id.Value != DBNull.Value ? Convert.ToInt32(id.Value) : 0;
+
+                }
+                foreach (var n in Contacts.Alternewcontact)
+                {
+                    if (.Contains(n.NumberId))
+                    {
+
+                        using (NpgsqlCommand cmd = new NpgsqlCommand(@"call CreateNumber(@p_ContactId,@p_PhoneNumber)", npgsqlConnection))
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.Add("@p_ContactId", NpgsqlDbType.Integer).Value = ContactId;
+                            cmd.Parameters.Add("@p_PhoneNumber", NpgsqlDbType.Varchar).Value = n.PhoneNumber;
+
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    else if (n.NumberId == 0)
+                    {
+                        using (NpgsqlCommand cmd = new NpgsqlCommand(@"call CreateNumber(@p_ContactId,@p_PhoneNumber)", npgsqlConnection))
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.Add("@p_ContactId", NpgsqlDbType.Integer).Value = ContactId;
+                            cmd.Parameters.Add("@p_PhoneNumber", NpgsqlDbType.Varchar).Value = n.PhoneNumber;
+                            cmd.ExecuteNonQuery();
+                        }
+
+                    }
+
+                }
+            }
+            return Ok("Updated sucessfully");
+        }
     }
 }
